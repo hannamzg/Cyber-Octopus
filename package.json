@@ -6,12 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "predeploy": "npm run build -- --base=/REPO_NAME/",
+    "predeploy": "npm run build -- --base=/Cyber-Octopus",
     "deploy": "gh-pages -d dist",
     "lint": "eslint .",
     "preview": "vite preview"
   },
-  "homepage": "https://hannamzg.github.io/REPO_NAME",
+  "homepage": "https://hannamzg.github.io/Cyber-Octopus",
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",
     "framer-motion": "^12.40.0",
