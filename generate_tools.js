@@ -8,7 +8,11 @@ const categories = [
   { id: "osint", name: "OSINT", desc: "Gathering intelligence from publicly available open sources." },
   { id: "forensics", name: "Forensics", desc: "Investigating digital artifacts from disks, memory, and network captures." },
   { id: "crypto", name: "Cryptography", desc: "Breaking ciphers, cracking passwords, and analyzing steganography." },
-  { id: "wireless", name: "Wireless Security", desc: "Auditing WiFi, Bluetooth, and other wireless protocols." }
+  { id: "wireless", name: "Wireless Security", desc: "Auditing WiFi, Bluetooth, and other wireless protocols." },
+  { id: "cloud", name: "Cloud Security", desc: "Auditing and exploiting AWS, Azure, GCP, and Kubernetes environments." },
+  { id: "mobile", name: "Mobile Security", desc: "Reverse engineering and assessing Android and iOS applications." },
+  { id: "hardware", name: "Hardware & IoT", desc: "Analyzing embedded systems, firmware, and radio frequencies." },
+  { id: "social", name: "Social Engineering", desc: "Simulating human-centric attacks like phishing and malicious payloads." }
 ];
 
 const subcategories = {
@@ -19,7 +23,11 @@ const subcategories = {
   "osint":    [ { id: "people", name: "People & Email" }, { id: "domain", name: "Domain Recon" } ],
   "forensics":[ { id: "disk", name: "Disk Analysis" }, { id: "memory", name: "Memory Forensics" } ],
   "crypto":   [ { id: "cracking", name: "Password Cracking" }, { id: "stego", name: "Steganography" } ],
-  "wireless": [ { id: "wifi", name: "WiFi Auditing" }, { id: "bluetooth", name: "Bluetooth Auditing" } ]
+  "wireless": [ { id: "wifi", name: "WiFi Auditing" }, { id: "bluetooth", name: "Bluetooth Auditing" } ],
+  "cloud":    [ { id: "aws", name: "AWS Security" }, { id: "azure", name: "Azure Security" }, { id: "k8s", name: "Kubernetes & Containers" } ],
+  "mobile":   [ { id: "android", name: "Android Security" }, { id: "ios", name: "iOS Security" } ],
+  "hardware": [ { id: "rf", name: "SDR & RF" }, { id: "iot", name: "IoT & Firmware" } ],
+  "social":   [ { id: "phishing", name: "Phishing" }, { id: "payloads", name: "Payload Generation" } ]
 };
 
 const nodes = [{ id: "root", name: "Cybersecurity", group: "root", val: 30, color: "#a855f7" }];
@@ -165,26 +173,116 @@ addTool("bluetooth", "Ubertooth", "Open-source Bluetooth experimentation platfor
 addTool("bluetooth", "BlueMaho", "GUI-based Bluetooth security testing tool.", "python BlueMaho.py", [{flag:"Scan",desc:"Discover nearby Bluetooth devices"},{flag:"Attack",desc:"Select and launch attack"}], true);
 addTool("bluetooth", "Crackle", "Crack BLE (Bluetooth Low Energy) encryption.", "crackle -i capture.pcap -o decrypted.pcap", [{flag:"-i",desc:"Input pcap file"},{flag:"-o",desc:"Output decrypted pcap file"}], false);
 
-// ─── PROCEDURAL FILL TO 1000 ─────────────────────────────────────────────────
-const adjectives = ["Advanced","Automated","Dynamic","Stealthy","Rapid","Tactical","Deep","Cyber","Ghost","Shadow","Apex","Nova","Zero","Elite","Omni","Vanguard","Echo","Sigma","Delta","Omega","Recon","Phantom","Void","Iron","Steel","Dark","Swift","Sharp","Apex","Flash"];
-const nouns = ["Scanner","Exploiter","Analyzer","Cracker","Fuzzer","Interceptor","Dumper","Payload","Proxy","Spider","Crawler","Hunter","Injector","Mapper","Sniffer","Breaker","Decoder","Tracker","Auditor","Inspector","Harvester","Listener","Monitor","Extractor","Burner","Patcher","Loader","Sampler","Trigger","Solver"];
-const allSubs = Object.values(subcategories).flat();
+// ─── MORE REAL TOOLS ────────────────────────────────────────────────────────
 
-while (toolCount < 1000) {
-  const sub = allSubs[toolCount % allSubs.length];
-  const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
-  const noun = nouns[Math.floor(Math.random() * nouns.length)];
-  const ver = `v${Math.floor(Math.random()*9)+1}.${Math.floor(Math.random()*10)}`;
-  const title = `${adj} ${noun} ${ver}`;
-  const desc = `A specialized tool for ${sub.name.toLowerCase()} operations. Enables rapid detection and exploitation of vulnerabilities within this security domain.`;
-  const cmd = `${adj.toLowerCase()}-${noun.toLowerCase()} --target 192.168.1.1 -v`;
-  const flags = [
-    { flag: "--target", desc: "Specify the target IP or domain." },
-    { flag: "--verbose", desc: "Enable verbose output for detailed logs." },
-    { flag: "--threads", desc: "Number of concurrent threads." }
-  ];
-  addTool(sub.id, title, desc, cmd, flags, false);
-}
+// Web / Recon
+addTool("recon_web", "Wfuzz", "Web application fuzzer for finding hidden files and vulnerabilities.", "wfuzz -c -z file,wordlist.txt --hc 404 http://example.com/FUZZ", [{flag:"-c",desc:"Output with colors"},{flag:"-z",desc:"Payload type and parameters"},{flag:"--hc",desc:"Hide responses with specific code"}], true);
+addTool("recon_web", "ffuf", "Fast web fuzzer written in Go.", "ffuf -w wordlist.txt -u http://example.com/FUZZ", [{flag:"-w",desc:"Wordlist file"},{flag:"-u",desc:"Target URL with FUZZ keyword"}], true);
+addTool("recon_web", "Nuclei", "Fast and customizable vulnerability scanner based on simple YAML based DSL.", "nuclei -u http://example.com", [{flag:"-u",desc:"Target URL"},{flag:"-t",desc:"List of templates to run"}], true);
+addTool("recon_web", "Arachni", "High-performance Ruby framework for evaluating the security of web applications.", "arachni http://example.com", [{flag:"--report-save-path",desc:"Path to save the report"}], false);
+
+// Network / Scanning
+addTool("scanning", "Hping3", "Network tool able to send custom TCP/IP packets.", "hping3 -S -p 80 192.168.1.1", [{flag:"-S",desc:"Set SYN flag"},{flag:"-p",desc:"Target port"}], true);
+addTool("scanning", "Netcat", "The TCP/IP swiss army knife for reading and writing data across networks.", "nc -nvv 192.168.1.1 80", [{flag:"-n",desc:"Do not resolve hostnames"},{flag:"-v",desc:"Verbose output"},{flag:"-l",desc:"Listen mode"}], true);
+addTool("scanning", "Socat", "Multipurpose relay tool for bidirectional data transfer.", "socat -d -d TCP4-LISTEN:4444 STDOUT", [{flag:"-d",desc:"Print fatal, error, warning and notice messages"}], false);
+
+// RE / Malware
+addTool("malware", "IDA Pro", "The industry standard disassembler and debugger.", "ida64.exe", [{flag:"Graph View",desc:"Interactive graphical display of control flow"}], true);
+addTool("malware", "CFF Explorer", "PE editor and viewer for analyzing Windows executables.", "CFF Explorer.exe", [{flag:"Import Directory",desc:"View imported DLLs and functions"}], false);
+addTool("malware", "PEiD", "Detects packers, cryptors and compilers for PE executables.", "peid.exe", [{flag:"Scan",desc:"Scan binary for signatures"}], false);
+
+// RE / Decompile
+addTool("decompile", "APKTool", "A tool for reverse engineering 3rd party, closed, binary Android apps.", "apktool d app.apk", [{flag:"d",desc:"Decode the APK"},{flag:"b",desc:"Build an APK"}], true);
+addTool("decompile", "ILSpy", "Open-source .NET assembly browser and decompiler.", "ILSpy.exe", [{flag:"Load",desc:"Load a .NET assembly"}], true);
+addTool("decompile", "dotPeek", "Free .NET decompiler and assembly browser by JetBrains.", "dotPeek.exe", [{flag:"Decompile",desc:"Convert IL to C#"}], false);
+
+// Exploit / Frameworks
+addTool("frameworks", "Core Impact", "Comprehensive penetration testing platform for assessing security.", "coreimpact", [{flag:"RPT",desc:"Rapid Penetration Test automation"}], false);
+addTool("frameworks", "Canvas", "Reliable automated exploitation system and framework by Immunity.", "canvas", [{flag:"Exploits",desc:"Select exploit module to run"}], false);
+
+// Exploit / PrivEsc
+addTool("privesc", "Mimikatz", "Tool for extracting plaintext passwords, hashes, PIN codes and kerberos tickets from memory.", "mimikatz.exe", [{flag:"privilege::debug",desc:"Get debug privileges"},{flag:"sekurlsa::logonpasswords",desc:"Extract passwords from LSASS"}], true);
+addTool("privesc", "BloodHound", "Single Page Application to easily identify complex attack paths in Active Directory.", "bloodhound", [{flag:"SharpHound",desc:"Data collector for BloodHound"}], true);
+addTool("privesc", "Responder", "LLMNR, NBT-NS and MDNS poisoner, with built-in HTTP/SMB/MSSQL/FTP/LDAP rogue authentication server.", "responder -I eth0", [{flag:"-I",desc:"Network interface to listen on"}], true);
+addTool("privesc", "Rubeus", "C# toolset for raw Kerberos interaction and abuses.", "Rubeus.exe triage", [{flag:"triage",desc:"List all Kerberos tickets"}], true);
+
+// OSINT / People & Email
+addTool("people", "Sherlock", "Hunt down social media accounts by username across social networks.", "python3 sherlock.py username", [{flag:"--timeout",desc:"Time to wait for response"}], true);
+addTool("people", "OSRFramework", "Set of libraries to perform Open Source Intelligence tasks.", "usufy.py -n username", [{flag:"-n",desc:"Target username"}], false);
+addTool("people", "Spiderfoot", "Automated OSINT data gathering tool.", "spiderfoot -l 127.0.0.1:5001", [{flag:"-l",desc:"IP and port to listen on for the web UI"}], true);
+
+// OSINT / Domain
+addTool("domain", "FOCA", "Fingerprinting Organizations with Collected Archives - finds metadata in public documents.", "foca.exe", [{flag:"Extract",desc:"Extract metadata from downloaded files"}], true);
+addTool("domain", "dnsenum", "Performs DNS enumeration to gather subdomains and infrastructure details.", "dnsenum example.com", [{flag:"--enum",desc:"Shortcut option equivalent to --threads 5 -s 15 -w"}], true);
+addTool("domain", "Fierce", "DNS reconnaissance tool for locating non-contiguous IP space.", "fierce --domain example.com", [{flag:"--domain",desc:"Domain to scan"}], false);
+
+// Forensics / Disk
+addTool("disk", "EnCase", "Digital forensics tool widely used by law enforcement.", "encase", [{flag:"Acquire",desc:"Create forensic image"}], false);
+addTool("disk", "X-Ways Forensics", "Advanced work environment for computer forensic examiners.", "xwforensics.exe", [{flag:"Recover",desc:"Recover deleted files"}], false);
+addTool("disk", "Bulk Extractor", "Scans a disk image, a file, or a directory of files to extract useful information.", "bulk_extractor -o output_dir disk.img", [{flag:"-o",desc:"Output directory"}], true);
+
+// Forensics / Memory
+addTool("memory", "Redline", "Endpoint security tool for memory and file analysis by FireEye.", "redline.exe", [{flag:"Collect",desc:"Gather data from target host"}], true);
+addTool("memory", "Memdump", "Utility to dump system memory to standard output stream.", "memdump > memory.dmp", [{flag:"None",desc:"Outputs to standard output"}], false);
+
+// Crypto / Password Cracking
+addTool("cracking", "Ophcrack", "Windows password cracker based on rainbow tables.", "ophcrack", [{flag:"Load",desc:"Load SAM file or hashes"},{flag:"Crack",desc:"Start rainbow table attack"}], true);
+addTool("cracking", "Hash-identifier", "Software to identify the different types of hashes.", "hash-identifier", [{flag:"Hash",desc:"Input hash string to identify"}], true);
+
+// Crypto / Steganography
+addTool("stego", "StegCracker", "Steganography brute-force utility to uncover hidden data.", "stegcracker image.jpg rockyou.txt", [{flag:"File",desc:"Target stego file"},{flag:"Wordlist",desc:"Password list to bruteforce"}], true);
+addTool("stego", "ExifTool", "Read, write and edit meta information in a wide variety of files.", "exiftool image.jpg", [{flag:"-a",desc:"Allow duplicate tags to be extracted"}], true);
+
+// Wireless / WiFi
+addTool("wifi", "Fern WiFi Cracker", "GUI tool for auditing wireless networks.", "fern-wifi-cracker", [{flag:"Interface",desc:"Select wireless interface"}], false);
+addTool("wifi", "Reaver", "Brute force attack against WiFi Protected Setup (WPS) registrar PINs.", "reaver -i mon0 -b 00:11:22:33:44:55", [{flag:"-i",desc:"Monitor mode interface"},{flag:"-b",desc:"Target BSSID"}], true);
+
+// Wireless / Bluetooth
+addTool("bluetooth", "Bettercap", "Swiss army knife for WiFi, Bluetooth Low Energy, wireless HID and Ethernet networks.", "bettercap -eval 'ble.recon on'", [{flag:"-eval",desc:"Run commands on startup"}], true);
+addTool("bluetooth", "Gatttool", "Tool for interacting with Bluetooth Low Energy devices.", "gatttool -b 00:11:22:33:44:55 -I", [{flag:"-b",desc:"MAC address of the target"},{flag:"-I",desc:"Interactive mode"}], true);
+
+// ─── NEW CATEGORIES TOOLS ───────────────────────────────────────────────────
+
+// Cloud / AWS
+addTool("aws", "Pacu", "AWS exploitation framework, designed for offensive security testing against cloud environments.", "python3 pacu.py", [{flag:"exec",desc:"Execute a module"},{flag:"set_keys",desc:"Set AWS credentials"}], true);
+addTool("aws", "ScoutSuite", "Multi-cloud security-auditing tool, which assesses the security posture of cloud environments.", "scout aws", [{flag:"aws",desc:"Provider (aws, azure, gcp)"},{flag:"--profile",desc:"AWS CLI profile"}], true);
+addTool("aws", "Cloudsplaining", "AWS IAM Security Assessment tool that identifies violations of least privilege.", "cloudsplaining download", [{flag:"download",desc:"Download IAM policies"},{flag:"scan",desc:"Scan downloaded policies"}], false);
+
+// Cloud / Azure
+addTool("azure", "ROADtools", "A framework to interact with Azure AD for offensive and defensive purposes.", "roadrecon gather", [{flag:"gather",desc:"Gather data from Azure AD"},{flag:"gui",desc:"Explore gathered data in UI"}], true);
+addTool("azure", "Stormspotter", "Azure Red Team tool for graphing Azure and Azure AD objects.", "stormspotter --config config.json", [{flag:"--config",desc:"Path to configuration file"}], false);
+
+// Cloud / K8s
+addTool("k8s", "Trivy", "Comprehensive and versatile security scanner for containers and other artifacts.", "trivy image my-app:latest", [{flag:"image",desc:"Scan container image"},{flag:"k8s",desc:"Scan Kubernetes cluster"}], true);
+addTool("k8s", "Kube-hunter", "Hunt for security weaknesses in Kubernetes clusters.", "kube-hunter --remote 192.168.1.1", [{flag:"--remote",desc:"Scan a remote cluster IP"},{flag:"--active",desc:"Run active attacks"}], true);
+addTool("k8s", "Peirates", "Kubernetes penetration testing tool.", "peirates", [{flag:"--shell",desc:"Drop into interactive shell"}], false);
+
+// Mobile / Android
+addTool("android", "MobSF", "Mobile Security Framework is an automated, all-in-one mobile application pen-testing framework.", "python manage.py runserver 0.0.0.0:8000", [{flag:"runserver",desc:"Start web interface"}], true);
+addTool("android", "Drozer", "Comprehensive security and attack framework for Android.", "drozer console connect", [{flag:"connect",desc:"Connect to mobile agent"},{flag:"run",desc:"Execute a drozer module"}], true);
+addTool("android", "Frida", "Dynamic instrumentation toolkit for developers, reverse-engineers, and security researchers.", "frida -U -f com.example.app", [{flag:"-U",desc:"Connect to USB device"},{flag:"-f",desc:"Spawn the app"}], true);
+
+// Mobile / iOS
+addTool("ios", "Objection", "Runtime mobile exploration toolkit, powered by Frida.", "objection -g com.example.app explore", [{flag:"-g",desc:"Target app bundle ID"},{flag:"explore",desc:"Launch interactive shell"}], true);
+addTool("ios", "Grapefruit", "iOS Blackbox Assessment tool with a web UI.", "grapefruit", [{flag:"--host",desc:"Host IP to bind to"}], false);
+
+// Hardware / SDR & RF
+addTool("rf", "GNU Radio", "Free & open-source software development toolkit that provides signal processing blocks to implement software radios.", "gnuradio-companion", [{flag:"GUI",desc:"Launch the graphical companion"}], true);
+addTool("rf", "Universal Radio Hacker", "Complete suite for wireless protocol investigation.", "urh", [{flag:"Spectrum",desc:"View frequency spectrum"},{flag:"Analyze",desc:"Demodulate and analyze signal"}], true);
+addTool("rf", "rtl_433", "Generic data receiver, mainly for the 433.92 MHz, 868 MHz, 315 MHz, and 915 MHz ISM bands.", "rtl_433", [{flag:"-A",desc:"Pulse analyzer mode"},{flag:"-R",desc:"Enable specific device protocol"}], true);
+
+// Hardware / IoT & Firmware
+addTool("iot", "FACT", "Firmware Analysis and Comparison Tool automates firmware analysis.", "fact_start", [{flag:"start",desc:"Start FACT services"}], false);
+addTool("iot", "Firmwalker", "Script for searching the extracted firmware file system for interesting files.", "firmwalker.sh /path/to/extracted/firmware", [{flag:"Directory",desc:"Target directory to scan"}], true);
+addTool("iot", "Routersploit", "Exploitation framework dedicated to embedded devices.", "rsf.py", [{flag:"use",desc:"Select exploit or scanner module"},{flag:"set target",desc:"Set target IP address"}], true);
+
+// Social / Phishing
+addTool("phishing", "Gophish", "Open-source phishing toolkit designed for businesses and penetration testers.", "gophish", [{flag:"--config",desc:"Path to config.json"}], true);
+addTool("phishing", "Evilginx2", "Man-in-the-middle attack framework used for phishing login credentials along with session cookies.", "evilginx2 -p ./phishlets", [{flag:"-p",desc:"Phishlets directory"},{flag:"-c",desc:"Developer config"}], true);
+
+// Social / Payloads
+addTool("payloads", "SET", "Social-Engineer Toolkit is an open-source penetration testing framework designed for social engineering.", "setoolkit", [{flag:"Menu",desc:"Interactive text menu"}], true);
+addTool("payloads", "MacroPack", "Tool used to automatically generate obfuscated MS Office documents.", "macropack.exe -f payload.vba -G doc", [{flag:"-f",desc:"Input file (VBA, VBS, etc.)"},{flag:"-G",desc:"Generate specific format (doc, xls)"}], false);
 
 const dbContent = `// Auto-generated database with ${toolCount} tools
 export const cyberData = {
